@@ -6,6 +6,8 @@ from frames.entry_list_frame import EntryListFrame
 from frames.entry_info_frame import EntryInfoFrame
 from frames.entry_content_frame import EntryContentFrame
 
+from controller import Controller
+
 
 class App(tk.Tk):
     """Models the Journaly application."""
@@ -17,14 +19,16 @@ class App(tk.Tk):
         self.title('Journaly')
         self.geometry('800x800')
 
-        # "Global" variables
-        self.title_entry_var = tk.StringVar()
+        self.controller = Controller(self)
 
         # Frame creation
         self.search_frame = SearchFrame(self)
         self.entry_list_frame = EntryListFrame(self)
         self.entry_info_frame = EntryInfoFrame(self)
         self.entry_content_frame = EntryContentFrame(self)
+
+        # TODO: think of a better fix
+        self.controller.add_frames()
 
         # Column 0
         self.search_frame.grid(row=0, column=0, sticky=tk.NSEW)

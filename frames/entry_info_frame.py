@@ -13,7 +13,7 @@ class EntryInfoFrame(tk.Frame):
 
         # Title entry
         self.title_entry = ttk.Entry(self,
-                                     textvariable=parent.title_entry_var,
+                                     textvariable=parent.controller.title_entry_var,
                                      state=tk.DISABLED
         )
         # Date created label
@@ -23,15 +23,16 @@ class EntryInfoFrame(tk.Frame):
         self.title_entry.pack(side=tk.TOP, anchor=tk.W)
         self.date_created_lbl.pack(side=tk.TOP, anchor=tk.W)
 
+        def on_title_entry_focus_in(event):
+            parent.controller.entry_focus_in()
+        
         def on_title_entry_focus_out(event):
-            """Saves the journal entry to the database."""
-            print('Saving entry...')
-            # Set button text to title_entry content
-            parent.entry_list_frame.sel_bttn['textvariable'] = ''
-            parent.entry_list_frame.sel_bttn['text'] = self.title_entry.get()
-            # Write to database
+            """Sets list item title and saves the journal entry
+            to the database.
+            """
+            parent.controller.entry_focus_out(self.title_entry.get())
 
         # TODO: Bind focus in to bind tk StringVar
-
+        self.title_entry.bind('<FocusIn>', on_title_entry_focus_in)
         # Bind focus out to save journal entry
         self.title_entry.bind('<FocusOut>', on_title_entry_focus_out)
