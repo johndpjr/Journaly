@@ -17,6 +17,9 @@ class App(tk.Tk):
         self.title('Journaly')
         self.geometry('800x800')
 
+        # "Global" variables
+        self.title_entry_var = tk.StringVar()
+
         # Frame creation
         self.search_frame = SearchFrame(self)
         self.entry_list_frame = EntryListFrame(self)
