@@ -3,6 +3,7 @@ from tkinter import ttk
 
 from datetime import datetime
 
+from database.database import Database
 from entry import Entry
 
 
@@ -15,6 +16,7 @@ class Controller:
         # "Global" variables
         self.title_entry_var = tk.StringVar()
 
+        self.db = Database()
         self.curr_entry = None
         self.entries = {}  # contains active Entry objects
     
@@ -25,6 +27,20 @@ class Controller:
         self.entry_info_frame = self.parent.entry_info_frame
         self.entry_content_frame = self.parent.entry_content_frame
     
+    def on_startup(self):
+        """Executes the startup flow for the application."""
+        for entry in self.db.getall_entries():
+            # Create new list item
+            bttn = ttk.Button(self.entry_list_frame)
+            bttn.pack(side=tk.TOP, fill=tk.X)
+            # Create entry object and update the dictionary
+            e = Entry(uid=entry[0], title=entry[1], created_date=entry[2], content=entry[3], bttn=bttn)
+            self.entries.update({e.uid: e})
+            bttn['text'] = e.title
+            # Set the button's command to open the entry
+            bttn['command'] = lambda e=e: self.open_entry(e)
+            print(entry)
+    
     def clear_entry(self):
         """Clears the current entry information."""
         # Erase title
@@ -34,6 +50,9 @@ class Controller:
     
     def open_entry(self, entry):
         # Save the current entry
+        if self.curr_entry is None:
+            self._enable_content_modification()
+            self.curr_entry = entry
 
         self.curr_entry.bttn['textvariable'] = ''
         self.curr_entry.content = self.entry_content_frame.textbox.get(1.0, 'end-1c')
@@ -52,11 +71,8 @@ class Controller:
     def new_entry(self):
         """Handles the command for a new entry."""
 
-        # Enable modification of entry title and content
-        self.entry_info_frame.title_entry['state'] = tk.NORMAL
-        self.entry_content_frame.textbox['state'] = tk.NORMAL
+        self._enable_content_modification()
         
-        # TODO: save content of previous entry
         if self.curr_entry is not None:
             self.curr_entry.content = self.entry_content_frame.textbox.get(1.0, 'end-1c')
 
@@ -76,8 +92,8 @@ class Controller:
         bttn.pack(side=tk.TOP, fill=tk.X)
 
         # Create Entry object and add to entries dict
-        self.curr_entry = Entry(created_date=created_date, bttn=bttn)
-        self.entries.update({self.curr_entry.id: self.curr_entry})
+        self.curr_entry = Entry(uid=self.db.get_uid(), created_date=created_date, bttn=bttn)
+        self.entries.update({self.curr_entry.uid: self.curr_entry})
         # Set the button's command to open the entry
         bttn['command'] = lambda e=self.curr_entry: self.open_entry(e)
     
@@ -88,4 +104,11 @@ class Controller:
         # Set button text to title of entry and unlink textvariable
         self.curr_entry.title = title
         self.curr_entry.bttn.config(textvariable='', text=title)
-        # TODO: write to database
+        
+        # Write to database
+        self.db.add_entry(self.curr_entry)
+
+    def _enable_content_modification(self):
+        """Enables the title entry and content textbox to be modified."""
+        self.entry_info_frame.title_entry['state'] = tk.NORMAL
+        self.entry_content_frame.textbox['state'] = tk.NORMAL

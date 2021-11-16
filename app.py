@@ -29,6 +29,7 @@ class App(tk.Tk):
 
         # TODO: think of a better fix
         self.controller.add_frames()
+        self.controller.on_startup()
 
         # Column 0
         self.search_frame.grid(row=0, column=0, sticky=tk.NSEW)
