@@ -30,13 +30,13 @@ class Controller:
         # Erase title
         self.entry_info_frame.title_entry.delete(0, tk.END)
         # Erase content text box
-        self.entry_content_frame.entry_content_text.delete(1.0, tk.END)
+        self.entry_content_frame.textbox.delete(1.0, tk.END)
     
     def open_entry(self, entry):
         # Save the current entry
 
         self.curr_entry.bttn['textvariable'] = ''
-        self.curr_entry.content = self.entry_content_frame.entry_content_text.get(1.0, 'end-1c')
+        self.curr_entry.content = self.entry_content_frame.textbox.get(1.0, 'end-1c')
         # Clear title entry and content text box
         self.clear_entry()
         # Insert title
@@ -44,9 +44,9 @@ class Controller:
         # Set created date label
         self.entry_info_frame.date_created_lbl['text'] = entry.created_date
         # Insert entry content to text box
-        self.entry_content_frame.entry_content_text.insert(1.0, entry.content)
+        self.entry_content_frame.textbox.insert(1.0, entry.content)
         # Focus on end of text box
-        self.entry_content_frame.entry_content_text.focus()
+        self.entry_content_frame.textbox.focus()
         self.curr_entry = entry
     
     def new_entry(self):
@@ -54,11 +54,11 @@ class Controller:
 
         # Enable modification of entry title and content
         self.entry_info_frame.title_entry['state'] = tk.NORMAL
-        self.entry_content_frame.entry_content_text['state'] = tk.NORMAL
+        self.entry_content_frame.textbox['state'] = tk.NORMAL
         
         # TODO: save content of previous entry
         if self.curr_entry is not None:
-            self.curr_entry.content = self.entry_content_frame.entry_content_text.get(1.0, 'end-1c')
+            self.curr_entry.content = self.entry_content_frame.textbox.get(1.0, 'end-1c')
 
         self.clear_entry()
        
