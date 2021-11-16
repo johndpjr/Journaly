@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 
+from entry import Entry
+
 
 class EntryFrame(tk.Frame):
     """Models the Entry Frame that contains
@@ -12,6 +14,7 @@ class EntryFrame(tk.Frame):
         super().__init__(parent, *args, **kwargs)
         self.controller = parent.controller
 
+        # Define widgets
         # Title entry
         self.title_entry = ttk.Entry(self,
                                      textvariable=self.controller.title_entry_var,
@@ -36,7 +39,30 @@ class EntryFrame(tk.Frame):
             """
             parent.controller.entry_focus_out(self.title_entry.get())
 
-        # TODO: Bind focus in to bind tk StringVar
         self.title_entry.bind('<FocusIn>', on_title_entry_focus_in)
         # Bind focus out to save journal entry
         self.title_entry.bind('<FocusOut>', on_title_entry_focus_out)
+    
+    def clear_entry(self):
+        """Clears the current entry information."""
+        # Clear title
+        self.title_entry.delete(0, tk.END)
+        # Clear content text
+        self.content_text.delete(1.0, tk.END)
+    
+    def insert_entry(self, entry: Entry):
+        """Inserts entry content into the frame."""
+        # Insert title
+        self.title_entry.insert(0, entry.title)
+        # Set created date label
+        self.date_created_lbl['text'] = entry.created_date
+        # Insert content into text box
+        self.content_text.insert(1.0, entry.content)
+
+        # Focus on content text
+        self.content_text.focus()
+    
+    def enable_entry_modification(self):
+        """Enables the title entry and content text to be modified."""
+        self.title_entry['state'] = tk.NORMAL
+        self.content_text['state'] = tk.NORMAL
