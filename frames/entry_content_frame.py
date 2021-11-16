@@ -11,5 +11,5 @@ class EntryContentFrame(tk.Frame):
         super().__init__(parent, *args, **kwargs)
 
         # Entry content text box
-        self.textbox = tk.Text(self, state=tk.DISABLED)
-        self.textbox.pack(fill=tk.BOTH, expand=True)
+        self.content_text = tk.Text(self, state=tk.DISABLED)
+        self.content_text.pack(fill=tk.BOTH, expand=True)

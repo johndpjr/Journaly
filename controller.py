@@ -24,8 +24,7 @@ class Controller:
         # Frames
         self.search_frame = self.parent.search_frame
         self.entry_list_frame = self.parent.entry_list_frame
-        self.entry_info_frame = self.parent.entry_info_frame
-        self.entry_content_frame = self.parent.entry_content_frame
+        self.entry_frame = self.parent.entry_frame
     
     def on_startup(self):
         """Executes the startup flow for the application."""
@@ -44,9 +43,9 @@ class Controller:
     def clear_entry(self):
         """Clears the current entry information."""
         # Erase title
-        self.entry_info_frame.title_entry.delete(0, tk.END)
+        self.entry_frame.title_entry.delete(0, tk.END)
         # Erase content text box
-        self.entry_content_frame.textbox.delete(1.0, tk.END)
+        self.entry_frame.content_text.delete(1.0, tk.END)
     
     def open_entry(self, entry):
         # Save the current entry
@@ -55,17 +54,17 @@ class Controller:
             self.curr_entry = entry
 
         self.curr_entry.bttn['textvariable'] = ''
-        self.curr_entry.content = self.entry_content_frame.textbox.get(1.0, 'end-1c')
+        self.curr_entry.content = self.entry_frame.content_text.get(1.0, 'end-1c')
         # Clear title entry and content text box
         self.clear_entry()
         # Insert title
-        self.entry_info_frame.title_entry.insert(0, entry.title)
+        self.entry_frame.title_entry.insert(0, entry.title)
         # Set created date label
-        self.entry_info_frame.date_created_lbl['text'] = entry.created_date
+        self.entry_frame.date_created_lbl['text'] = entry.created_date
         # Insert entry content to text box
-        self.entry_content_frame.textbox.insert(1.0, entry.content)
+        self.entry_frame.content_text.insert(1.0, entry.content)
         # Focus on end of text box
-        self.entry_content_frame.textbox.focus()
+        self.entry_frame.content_text.focus()
         self.curr_entry = entry
     
     def new_entry(self):
@@ -74,16 +73,16 @@ class Controller:
         self._enable_content_modification()
         
         if self.curr_entry is not None:
-            self.curr_entry.content = self.entry_content_frame.textbox.get(1.0, 'end-1c')
+            self.curr_entry.content = self.entry_frame.content_text.get(1.0, 'end-1c')
 
         self.clear_entry()
        
         # Set the datetime of the date created label
         created_date = datetime.now().strftime('%c')
-        self.entry_info_frame.date_created_lbl['text'] = created_date
+        self.entry_frame.date_created_lbl['text'] = created_date
        
         # Focus on entry title
-        self.entry_info_frame.title_entry.focus()
+        self.entry_frame.title_entry.focus()
        
         # Create new list item
         bttn = ttk.Button(self.entry_list_frame,
@@ -109,6 +108,6 @@ class Controller:
         self.db.add_entry(self.curr_entry)
 
     def _enable_content_modification(self):
-        """Enables the title entry and content textbox to be modified."""
-        self.entry_info_frame.title_entry['state'] = tk.NORMAL
-        self.entry_content_frame.textbox['state'] = tk.NORMAL
+        """Enables the title entry and content content_text to be modified."""
+        self.entry_frame.title_entry['state'] = tk.NORMAL
+        self.entry_frame.content_text['state'] = tk.NORMAL
