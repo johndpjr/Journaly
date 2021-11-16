@@ -36,6 +36,7 @@ class Controller:
         # Save the current entry
 
         self.curr_entry.bttn['textvariable'] = ''
+        self.curr_entry.content = self.entry_content_frame.entry_content_text.get(1.0, 'end-1c')
         # Clear title entry and content text box
         self.clear_entry()
         # Insert title
@@ -56,6 +57,8 @@ class Controller:
         self.entry_content_frame.entry_content_text['state'] = tk.NORMAL
         
         # TODO: save content of previous entry
+        if self.curr_entry is not None:
+            self.curr_entry.content = self.entry_content_frame.entry_content_text.get(1.0, 'end-1c')
 
         self.clear_entry()
        
