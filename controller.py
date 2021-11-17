@@ -26,12 +26,19 @@ class Controller:
         self.entry_list_frame = self.parent.entry_list_frame
         self.entry_frame = self.parent.entry_frame
     
+    def _new_entry_list_item(self):
+        """Adds a new entry list item to the entry list.
+        Returns the created button.
+        """
+        bttn = ttk.Button(self.entry_list_frame)
+        bttn.pack(side=tk.TOP, fill=tk.X)
+
+        return bttn
+    
     def on_startup(self):
         """Executes the startup flow for the application."""
         for entry in self.db.getall_entries():
-            # Create new list item
-            bttn = ttk.Button(self.entry_list_frame)
-            bttn.pack(side=tk.TOP, fill=tk.X)
+            bttn = self._new_entry_list_item()
             # Create entry object and update the dictionary
             e = Entry(uid=entry[0], title=entry[1], created_date=entry[2], content=entry[3], bttn=bttn)
             self.entries.update({e.uid: e})
@@ -71,14 +78,13 @@ class Controller:
         # Focus on entry title
         self.entry_frame.title_entry.focus()
        
-        # Create new list item
-        bttn = ttk.Button(self.entry_list_frame,
-                          textvariable=self.title_entry_var
-        )
-        bttn.pack(side=tk.TOP, fill=tk.X)
+        bttn = self._new_entry_list_item()
 
         # Create Entry object and add to entries dict
-        self.curr_entry = Entry(uid=self.db.get_uid(), created_date=created_date, bttn=bttn)
+        self.curr_entry = Entry(uid=self.db.get_uid(),
+                                created_date=created_date,
+                                bttn=bttn
+        )
         self.entries.update({self.curr_entry.uid: self.curr_entry})
         # Set the button's command to open the entry
         bttn['command'] = lambda e=self.curr_entry: self.open_entry(e)

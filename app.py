@@ -33,8 +33,7 @@ class App(tk.Tk):
         self.search_frame.grid(row=0, column=0, sticky=tk.NSEW)
         self.entry_list_frame.grid(row=1, column=0, sticky=tk.NSEW)
         # Column 1
-        self.entry_frame.grid(row=0, column=1, sticky=tk.NSEW)
-        self.entry_frame.grid(row=1, column=1, sticky=tk.NSEW)
+        self.entry_frame.grid(row=0, column=1, rowspan=2, sticky=tk.NSEW)
 
         self.grid_rowconfigure(1, weight=1)
 
