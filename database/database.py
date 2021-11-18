@@ -41,7 +41,7 @@ class Database:
         with self.conn:
             self.c.execute("""UPDATE Entries
                            SET title=?,
-                           content=?,
+                           content=?
                            WHERE uid=?""", (entry.title, entry.content, entry.uid)
             )
 

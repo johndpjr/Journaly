@@ -31,17 +31,23 @@ class EntryFrame(tk.Frame):
         self.content_text.pack(fill=tk.BOTH, anchor=tk.W, expand=True)
 
         def on_title_entry_focus_in(event):
-            parent.controller.entry_focus_in()
+            self.controller.entry_focus_in()
         
         def on_title_entry_focus_out(event):
             """Sets list item title and saves the journal entry
             to the database.
             """
-            parent.controller.entry_focus_out(self.title_entry.get())
+            self.controller.entry_focus_out(self.title_entry.get())
 
         self.title_entry.bind('<FocusIn>', on_title_entry_focus_in)
         # Bind focus out to save journal entry
         self.title_entry.bind('<FocusOut>', on_title_entry_focus_out)
+
+        def on_content_text_focus_out(event):
+            """Saves the textbox content to the database."""
+            self.controller.textbox_focus_out()
+        
+        self.content_text.bind('<FocusOut>', on_content_text_focus_out)
     
     def clear_entry(self):
         """Clears the current entry information."""
@@ -66,3 +72,7 @@ class EntryFrame(tk.Frame):
         """Enables the title entry and content text to be modified."""
         self.title_entry['state'] = tk.NORMAL
         self.content_text['state'] = tk.NORMAL
+    
+    def get_content(self):
+        """Returns the content of the content_text."""
+        return self.content_text.get(1.0, 'end-1c')
