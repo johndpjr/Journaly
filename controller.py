@@ -26,17 +26,16 @@ class Controller:
         self.entry_list_frame = self.parent.entry_list_frame
         self.entry_frame = self.parent.entry_frame
     
-    def _delete_entry(self, entry: Entry):
+    def delete_entry(self, entry: Entry):
         # Remove widgets from view
-        entry.bttn.destroy()
-        entry.del_bttn.destroy()
+        entry.remove_from_view()
         # Remove from database
         self.db.delete_entry(entry.uid)
         del self.entries[entry.uid]
     
     def _new_entry_list_item(self):
         """Adds a new entry list item to the entry list.
-        Returns the created button.
+        Returns the created button and delete button.
         """
         bttn = ttk.Button(self.entry_list_frame)
         bttn.grid(row=self._row, column=0, sticky=tk.EW)
@@ -51,18 +50,14 @@ class Controller:
         """Executes the startup flow for the application."""
         for entry in self.db.getall_entries():
             # Create entry object
-            e = Entry(uid=entry[0], title=entry[1],
-                      created_date=entry[2], content=entry[3],
-                      persistent=True)
             bttn, del_bttn = self._new_entry_list_item()
-            e.bttn = bttn
-            e.del_bttn = del_bttn
+            e = Entry(self, uid=entry[0], title=entry[1],
+                      created_date=entry[2], content=entry[3],
+                      bttn=bttn, del_bttn=del_bttn,
+                      persistent=True)
             # Update the dictionary
             self.entries.update({e.uid: e})
             bttn['text'] = e.title
-            # Set the button's command to open the entry
-            bttn['command'] = lambda e=e: self.open_entry(e)
-            del_bttn['command'] = lambda e=e: self._delete_entry(e)
     
     def open_entry(self, entry):
         # Save the current entry
@@ -98,14 +93,11 @@ class Controller:
         bttn, del_bttn = self._new_entry_list_item()
 
         # Create Entry object and add to entries dict
-        self.curr_entry = Entry(uid=self.db.get_uid(),
+        self.curr_entry = Entry(self, uid=self.db.get_uid(),
                                 created_date=created_date,
                                 bttn=bttn, del_bttn=del_bttn
         )
         self.entries.update({self.curr_entry.uid: self.curr_entry})
-        # Set the button's command to open the entry
-        bttn['command'] = lambda e=self.curr_entry: self.open_entry(e)
-        del_bttn['command'] = lambda e=self.curr_entry: self._delete_entry(e)
     
     def entry_focus_in(self):
         self.curr_entry.bttn['textvariable'] = self.title_entry_var
