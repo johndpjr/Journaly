@@ -19,10 +19,9 @@ class Controller:
         self.db = Database()
         self.curr_entry = None
         self.entries = {}  # contains active Entry objects
-        self._row = 1  # "New entry" button is above
+        self._row = 2  # "New entry" button is above
     
     def add_frames(self):
-        self.search_frame = self.parent.search_frame
         self.entry_list_frame = self.parent.entry_list_frame
         self.entry_frame = self.parent.entry_frame
     
