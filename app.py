@@ -27,15 +27,16 @@ class App(tk.Tk):
         self.controller.add_frames()
         self.controller.on_startup()
 
-        self.entry_list_frame.pack(side=tk.LEFT, fill=tk.Y)
+        # Pack frames
+        self.entry_list_frame.pack(side=tk.LEFT, fill=tk.BOTH)
         self.entry_frame.pack(side=tk.LEFT, fill=tk.BOTH)
 
         # Handle the window close event
-        def on_closing():
-            self.controller.save_entry()
-            self.destroy()
+        def _on_closing():
+            self.controller.save_entry()  # save current entry
+            self.destroy()  # destroy the root window (and its children)
 
-        self.protocol("WM_DELETE_WINDOW", on_closing)
+        self.protocol('WM_DELETE_WINDOW', _on_closing)
 
 
 if __name__ == '__main__':

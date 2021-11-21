@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import tkinter as tk
 from tkinter import ttk
 
@@ -6,11 +8,15 @@ from datetime import datetime
 from database.database import Database
 from entry import Entry
 
+import typing
+if typing.TYPE_CHECKING:
+    from app import App
+
 
 class Controller:
-    """Accepts input and handles it."""
+    """Accepts user input and converts it to a relevant command."""
     
-    def __init__(self, parent):
+    def __init__(self, parent: App):
         self.parent = parent
 
         # "Global" variables
@@ -81,9 +87,6 @@ class Controller:
         """Handles the command for a new entry."""
 
         self.entry_frame.enable_entry_modification()
-        
-        # if self.curr_entry is not None:
-        #     self.curr_entry.content = self.entry_frame.get_content()
 
         self.entry_frame.clear_entry()
        

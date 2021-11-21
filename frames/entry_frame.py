@@ -1,7 +1,13 @@
+from __future__ import annotations
+
 import tkinter as tk
 from tkinter import ttk
 
 from entry import Entry
+
+import typing
+if typing.TYPE_CHECKING:
+    from app import App
 
 
 class EntryFrame(tk.Frame):

@@ -1,7 +1,11 @@
+from __future__ import annotations
+
 import tkinter as tk
 from tkinter import ttk
 
-from entry import Entry
+import typing
+if typing.TYPE_CHECKING:
+    from app import App
 
 
 class EntryListFrame(tk.Frame):
@@ -9,7 +13,7 @@ class EntryListFrame(tk.Frame):
     a list of past journal entries.
     """
 
-    def __init__(self, parent, *args, **kwargs):
+    def __init__(self, parent: App, *args, **kwargs):
         # Initialize the frame
         super().__init__(parent, *args, **kwargs)
         self.controller = parent.controller
