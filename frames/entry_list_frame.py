@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-from datetime import datetime
+from entry import Entry
 
 
 class EntryListFrame(tk.Frame):
@@ -19,7 +19,11 @@ class EntryListFrame(tk.Frame):
                                          text='New entry',
                                          command=self._on_new_entry_bttn_click
         )
-        self.new_entry_bttn.pack(side=tk.TOP, fill=tk.X)
+        self.new_entry_bttn.grid(row=0, column=0, columnspan=2,
+                                 pady=(10, 5), sticky=tk.EW
+        )
+
+        self.grid_columnconfigure(0, weight=1)
     
     def _on_new_entry_bttn_click(self):
         """Handles the 'New entry' button click."""
