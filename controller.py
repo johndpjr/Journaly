@@ -72,6 +72,12 @@ class Controller:
         self.entry_frame.insert_entry(entry)
         self.curr_entry = entry
     
+    def save_entry(self):
+        if self.curr_entry is not None:
+            self.curr_entry.title = self.entry_frame.title_entry.get()
+            self.curr_entry.content = self.entry_frame.get_content()
+            self.db.update_entry(self.curr_entry)
+    
     def new_entry(self):
         """Handles the command for a new entry."""
 

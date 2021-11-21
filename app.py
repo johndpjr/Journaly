@@ -37,6 +37,13 @@ class App(tk.Tk):
 
         self.grid_rowconfigure(1, weight=1)
 
+        # Handle the window close event
+        def on_closing():
+            self.controller.save_entry()
+            self.destroy()
+
+        self.protocol("WM_DELETE_WINDOW", on_closing)
+
 
 if __name__ == '__main__':
     app = App()
