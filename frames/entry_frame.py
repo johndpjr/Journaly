@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 
-from app import App
 from entry import Entry
 
 
@@ -10,7 +9,7 @@ class EntryFrame(tk.Frame):
     the journal entry information.
     """
 
-    def __init__(self, parent: App, *args, **kwargs):
+    def __init__(self, parent, *args, **kwargs):
         # Initialize the frame
         super().__init__(parent, *args, **kwargs)
         self.controller = parent.controller

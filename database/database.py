@@ -2,6 +2,7 @@ import sqlite3
 import uuid
 from datetime import datetime
 from pathlib import Path
+from entry import Entry
 
 
 class Database:
@@ -26,7 +27,7 @@ class Database:
         """Returns a valid uuid4."""
         return str(uuid.uuid4()).replace('-', '')
     
-    def add_entry(self, entry):
+    def add_entry(self, entry: Entry):
         """Adds an entry to Entries."""
         with self.conn:
             self.c.execute("INSERT INTO Entries (uid, title, createdDate) VALUES (?, ?, ?)", (entry.uid, entry.title, entry.created_date))
@@ -36,7 +37,7 @@ class Database:
         with self.conn:
             self.c.execute("DELETE FROM Entries WHERE uid=?", (uid,))
 
-    def update_entry(self, entry):
+    def update_entry(self, entry: Entry):
         """Updates an entry."""
         with self.conn:
             self.c.execute("""UPDATE Entries

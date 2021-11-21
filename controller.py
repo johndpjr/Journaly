@@ -64,10 +64,9 @@ class Controller:
         if self.curr_entry is None:
             self.entry_frame.enable_entry_modification()
             self.curr_entry = entry
-
-        self.curr_entry.bttn['textvariable'] = ''
-        self.curr_entry.content = self.entry_frame.get_content()
-        # self.db.update_entry(self.curr_entry)
+        else:
+            self.curr_entry.bttn['textvariable'] = ''
+            self.curr_entry.content = self.entry_frame.get_content()
         
         self.entry_frame.clear_entry()
         self.entry_frame.insert_entry(entry)
@@ -78,8 +77,8 @@ class Controller:
 
         self.entry_frame.enable_entry_modification()
         
-        if self.curr_entry is not None:
-            self.curr_entry.content = self.entry_frame.get_content()
+        # if self.curr_entry is not None:
+        #     self.curr_entry.content = self.entry_frame.get_content()
 
         self.entry_frame.clear_entry()
        
@@ -102,12 +101,13 @@ class Controller:
     def entry_focus_in(self):
         self.curr_entry.bttn['textvariable'] = self.title_entry_var
     
-    def entry_focus_out(self, title):
-        # Set button text to title of entry and unlink textvariable
+    def entry_focus_out(self, title: str):
+        # Set button text to title of entry.
         self.curr_entry.title = title
+        # Unlink the textvaraible of the current entry.
         self.curr_entry.bttn.config(textvariable='', text=title)
         
-        # Write to database if not persistent
+        # Add to database if entry is not persistent.
         if not self.curr_entry.persistent:
             self.db.add_entry(self.curr_entry)
             self.curr_entry.persistent = True
@@ -118,3 +118,5 @@ class Controller:
         self.curr_entry.content = self.entry_frame.get_content()
         if self.curr_entry.persistent:
             self.db.update_entry(self.curr_entry)
+        else:
+            self.db.add_entry(self.curr_entry)
