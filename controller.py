@@ -38,6 +38,12 @@ class Controller:
 
         self.db.delete_entry(entry)
         del self.entries[entry.uid]  # free entry from cache
+
+        # Clear the entry_frame if currently selected entry is deleted.
+        if entry.uid == self.curr_entry.uid:
+            self.entry_frame.clear_entry()
+            # TODO: auto-select the next entry
+            self.entry_frame.set_entry_modification_state(tk.DISABLED)
     
     def _add_new_entry_list_item(self, **kwargs) -> Entry:
         """Adds a new entry list item to the entry list.
@@ -71,7 +77,7 @@ class Controller:
     def open_entry(self, entry):
         # Save the current entry
         if self.curr_entry is None:
-            self.entry_frame.enable_entry_modification()
+            self.entry_frame.set_entry_modification_state(tk.NORMAL)
             self.curr_entry = entry
         else:
             self.curr_entry.bttn['textvariable'] = ''
@@ -91,13 +97,12 @@ class Controller:
     def new_entry(self):
         """Handles the command for a new entry."""
 
-        self.entry_frame.enable_entry_modification()
         self.entry_frame.clear_entry()
        
         # Set the datetime of the date created label
         # TODO: store created_date as an integer (format YYYYMMDDHHMMSS)
         created_date = datetime.now().strftime('%c')
-        self.entry_frame.date_created_lbl['text'] = created_date
+        self.entry_frame.date_created_label['text'] = created_date
        
         # Focus on entry title
         self.entry_frame.title_entry.focus()

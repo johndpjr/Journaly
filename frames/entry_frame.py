@@ -27,13 +27,13 @@ class EntryFrame(tk.Frame):
                                      state=tk.DISABLED
         )
         # Date created label
-        self.date_created_lbl = tk.Label(self)
+        self.date_created_label = tk.Label(self)
         # Entry content text box
         self.content_text = tk.Text(self, state=tk.DISABLED)
 
         # Pack all widgets
         self.title_entry.pack(side=tk.TOP, anchor=tk.W)
-        self.date_created_lbl.pack(side=tk.TOP, anchor=tk.W)
+        self.date_created_label.pack(side=tk.TOP, anchor=tk.W)
         self.content_text.pack(fill=tk.BOTH, anchor=tk.W, expand=True)
 
         # Sets title_entry events and bindings.
@@ -63,26 +63,28 @@ class EntryFrame(tk.Frame):
     
     def clear_entry(self):
         """Clears the title_entry and the content_text."""
+        self.set_entry_modification_state(tk.NORMAL)
         self.title_entry.delete(0, tk.END)
+        self.date_created_label['text'] = ''
         self.content_text.delete(1.0, tk.END)
     
     def insert_entry(self, entry: Entry):
         """Inserts entry content into the title_entry and content_text
-        and sets the date_created_lbl to the entry's creation date."""
+        and sets the date_created_label to the entry's creation date."""
         # Insert title
         self.title_entry.insert(0, entry.title)
         # Set created date label
-        self.date_created_lbl['text'] = entry.created_date
+        self.date_created_label['text'] = entry.created_date
         # Insert content into text box
         self.content_text.insert(1.0, entry.content)
 
         # Focus on content text
         self.content_text.focus()
     
-    def enable_entry_modification(self):
-        """Enables title_entry and content_text to be modified."""
-        self.title_entry['state'] = tk.NORMAL
-        self.content_text['state'] = tk.NORMAL
+    def set_entry_modification_state(self, state):
+        """Sets the state of the title_entry and content_text widgets."""
+        self.title_entry['state'] = state
+        self.content_text['state'] = state
     
     def get_content(self):
         """Returns the content of the content_text."""
