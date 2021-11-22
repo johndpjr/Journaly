@@ -39,7 +39,7 @@ class Controller:
         self.db.delete_entry(entry)
         del self.entries[entry.uid]  # free entry from cache
     
-    def _add_new_entry_list_item(self, **kwargs):
+    def _add_new_entry_list_item(self, **kwargs) -> Entry:
         """Adds a new entry list item to the entry list.
         Returns the newly created entry.
         """
@@ -55,11 +55,14 @@ class Controller:
         return entry
     
     def on_startup(self):
-        """Executes the startup flow for the application."""
-        for entry in self.db.getall_entries():
+        """Executes the startup flow for the application.
+        Retrieves all entries from the database and
+        displays them as buttons.
+        """
+        for db_entry in self.db.getall_entries():
             # Create entry object
-            entry = self._add_new_entry_list_item(uid=entry[0], title=entry[1],
-                                                  created_date=entry[2], content=entry[3],
+            entry = self._add_new_entry_list_item(uid=db_entry[0], title=db_entry[1],
+                                                  created_date=db_entry[2], content=db_entry[3],
                                                   persistent=True
             )
             # Update the dictionary
@@ -79,6 +82,7 @@ class Controller:
         self.curr_entry = entry
     
     def save_entry(self):
+        """Saves the current entry to the database."""
         if self.curr_entry is not None:
             self.curr_entry.title = self.entry_frame.title_entry.get()
             self.curr_entry.content = self.entry_frame.get_content()
@@ -88,10 +92,10 @@ class Controller:
         """Handles the command for a new entry."""
 
         self.entry_frame.enable_entry_modification()
-
         self.entry_frame.clear_entry()
        
         # Set the datetime of the date created label
+        # TODO: store created_date as an integer (format YYYYMMDDHHMMSS)
         created_date = datetime.now().strftime('%c')
         self.entry_frame.date_created_lbl['text'] = created_date
        
