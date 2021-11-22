@@ -29,7 +29,7 @@ class App(tk.Tk):
 
         # Pack frames
         self.entry_list_frame.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.entry_frame.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.entry_frame.pack(side=tk.LEFT, fill=tk.BOTH, padx=(5,0))
 
         # Handle the window close event
         def _on_closing():

@@ -24,17 +24,20 @@ class EntryFrame(tk.Frame):
         # Title entry
         self.title_entry = ttk.Entry(self,
                                      textvariable=self.controller.title_entry_var,
+                                     font='Courier 14 bold',
                                      state=tk.DISABLED
         )
         # Date created label
-        self.date_created_label = tk.Label(self)
+        self.date_created_label = tk.Label(self, font='Courier 12')
         # Entry content text box
-        self.content_text = tk.Text(self, state=tk.DISABLED)
+        self.content_text = tk.Text(self, wrap=tk.WORD,
+                                    state=tk.DISABLED
+        )
 
         # Pack all widgets
-        self.title_entry.pack(side=tk.TOP, anchor=tk.W)
-        self.date_created_label.pack(side=tk.TOP, anchor=tk.W)
-        self.content_text.pack(fill=tk.BOTH, anchor=tk.W, expand=True)
+        self.title_entry.pack(side=tk.TOP, fill=tk.X, anchor=tk.NW)
+        self.date_created_label.pack(side=tk.TOP, anchor=tk.NW)
+        self.content_text.pack(side=tk.TOP, fill=tk.BOTH, anchor=tk.NW, expand=True)
 
         # Sets title_entry events and bindings.
         def on_title_entry_focus_in(event):
