@@ -3,6 +3,8 @@ from __future__ import annotations
 import tkinter as tk
 from tkinter import ttk
 
+from frames.vertical_scroll_frame import VerticalScrollFrame
+
 import typing
 if typing.TYPE_CHECKING:
     from app import App
@@ -39,7 +41,15 @@ class EntryListFrame(tk.Frame):
                                  pady=(10, 5), sticky=tk.EW
         )
 
+        # Scroll frame
+        self.vertical_scroll_frame = VerticalScrollFrame(self)
+        self.vertical_scroll_frame.grid(row=2, column=0,
+                                        columnspan=2, sticky=tk.NSEW
+        )
+        self.vertical_scroll_frame.interior.grid_columnconfigure(0, weight=1)
+
         self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(2, weight=1)
     
     def _on_search_bttn_click(self):
         """Handles the 'Search' button click."""
