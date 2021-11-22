@@ -18,6 +18,9 @@ class Entry:
 
         self.bttn['command'] = lambda e=self: controller.open_entry(e)
         self.del_bttn['command'] = lambda e=self: controller.delete_entry(e)
+
+        if title is not None:
+            self.bttn['text'] = self.title
     
     def remove_from_view(self):
         self.bttn.destroy()

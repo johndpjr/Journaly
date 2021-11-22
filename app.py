@@ -1,7 +1,6 @@
 import tkinter as tk
 
 # Frame imports
-from frames.search_frame import SearchFrame
 from frames.entry_list_frame import EntryListFrame
 from frames.entry_frame import EntryFrame
 
@@ -21,7 +20,6 @@ class App(tk.Tk):
         self.controller = Controller(self)
 
         # Frame creation
-        self.search_frame = SearchFrame(self)
         self.entry_list_frame = EntryListFrame(self)
         self.entry_frame = EntryFrame(self)
 
@@ -29,20 +27,16 @@ class App(tk.Tk):
         self.controller.add_frames()
         self.controller.on_startup()
 
-        # Column 0
-        self.search_frame.grid(row=0, column=0, sticky=tk.NSEW)
-        self.entry_list_frame.grid(row=1, column=0, sticky=tk.NSEW)
-        # Column 1
-        self.entry_frame.grid(row=0, column=1, rowspan=2, sticky=tk.NSEW)
-
-        self.grid_rowconfigure(1, weight=1)
+        # Pack frames
+        self.entry_list_frame.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.entry_frame.pack(side=tk.LEFT, fill=tk.BOTH, padx=(5,0))
 
         # Handle the window close event
-        def on_closing():
-            self.controller.save_entry()
-            self.destroy()
+        def _on_closing():
+            self.controller.save_entry()  # save current entry
+            self.destroy()  # destroy the root window (and its children)
 
-        self.protocol("WM_DELETE_WINDOW", on_closing)
+        self.protocol('WM_DELETE_WINDOW', _on_closing)
 
 
 if __name__ == '__main__':

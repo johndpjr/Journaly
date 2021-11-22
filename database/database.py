@@ -1,7 +1,7 @@
 import sqlite3
 import uuid
-from datetime import datetime
 from pathlib import Path
+
 from entry import Entry
 
 
@@ -30,12 +30,14 @@ class Database:
     def add_entry(self, entry: Entry):
         """Adds an entry to Entries."""
         with self.conn:
-            self.c.execute("INSERT INTO Entries (uid, title, createdDate) VALUES (?, ?, ?)", (entry.uid, entry.title, entry.created_date))
+            self.c.execute("INSERT INTO Entries (uid, title, createdDate) VALUES (?, ?, ?)",
+                           (entry.uid, entry.title, entry.created_date)
+            )
     
-    def delete_entry(self, uid: str):
-        """Deletes an entry from Entries."""
+    def delete_entry(self, entry: Entry):
+        """Deletes the entry from Entries."""
         with self.conn:
-            self.c.execute("DELETE FROM Entries WHERE uid=?", (uid,))
+            self.c.execute("DELETE FROM Entries WHERE uid=?", (entry.uid,))
 
     def update_entry(self, entry: Entry):
         """Updates an entry."""

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import tkinter as tk
 from tkinter import ttk
 
@@ -6,63 +8,76 @@ from datetime import datetime
 from database.database import Database
 from entry import Entry
 
+import typing
+if typing.TYPE_CHECKING:
+    from app import App
+
 
 class Controller:
-    """Accepts input and handles it."""
+    """Accepts user input and converts it to a relevant command."""
     
-    def __init__(self, parent):
+    def __init__(self, parent: App):
         self.parent = parent
+
+        self.db = Database()
 
         # "Global" variables
         self.title_entry_var = tk.StringVar()
 
-        self.db = Database()
         self.curr_entry = None
-        self.entries = {}  # contains active Entry objects
-        self._row = 1  # "New entry" button is above
+        self.entries = {}  # contains cached Entry objects
+        self._curr_grid_row = 2
     
     def add_frames(self):
-        self.search_frame = self.parent.search_frame
         self.entry_list_frame = self.parent.entry_list_frame
         self.entry_frame = self.parent.entry_frame
     
     def delete_entry(self, entry: Entry):
-        # Remove widgets from view
+        """Removes the entry from the view and the database."""
         entry.remove_from_view()
-        # Remove from database
-        self.db.delete_entry(entry.uid)
-        del self.entries[entry.uid]
+
+        self.db.delete_entry(entry)
+        del self.entries[entry.uid]  # free entry from cache
+
+        # Clear the entry_frame if currently selected entry is deleted.
+        if entry.uid == self.curr_entry.uid:
+            self.entry_frame.clear_entry()
+            # TODO: auto-select the next entry
+            self.entry_frame.set_entry_modification_state(tk.DISABLED)
     
-    def _new_entry_list_item(self):
+    def _add_new_entry_list_item(self, **kwargs) -> Entry:
         """Adds a new entry list item to the entry list.
-        Returns the created button and delete button.
+        Returns the newly created entry.
         """
         bttn = ttk.Button(self.entry_list_frame)
-        bttn.grid(row=self._row, column=0, sticky=tk.EW)
+        bttn.grid(row=self._curr_grid_row, column=0, sticky=tk.EW)
 
         del_bttn = ttk.Button(self.entry_list_frame, text='X')
-        del_bttn.grid(row=self._row, column=1)
-        self._row += 1
+        del_bttn.grid(row=self._curr_grid_row, column=1)
+        self._curr_grid_row += 1
 
-        return bttn, del_bttn
+        entry = Entry(self, bttn=bttn, del_bttn=del_bttn, **kwargs)
+        
+        return entry
     
     def on_startup(self):
-        """Executes the startup flow for the application."""
-        for entry in self.db.getall_entries():
+        """Executes the startup flow for the application.
+        Retrieves all entries from the database and
+        displays them as buttons.
+        """
+        for db_entry in self.db.getall_entries():
             # Create entry object
-            bttn, del_bttn = self._new_entry_list_item()
-            e = Entry(self, uid=entry[0], title=entry[1],
-                      created_date=entry[2], content=entry[3],
-                      bttn=bttn, del_bttn=del_bttn,
-                      persistent=True)
+            entry = self._add_new_entry_list_item(uid=db_entry[0], title=db_entry[1],
+                                                  created_date=db_entry[2], content=db_entry[3],
+                                                  persistent=True
+            )
             # Update the dictionary
-            self.entries.update({e.uid: e})
-            bttn['text'] = e.title
+            self.entries.update({entry.uid: entry})
     
     def open_entry(self, entry):
         # Save the current entry
         if self.curr_entry is None:
-            self.entry_frame.enable_entry_modification()
+            self.entry_frame.set_entry_modification_state(tk.NORMAL)
             self.curr_entry = entry
         else:
             self.curr_entry.bttn['textvariable'] = ''
@@ -73,6 +88,7 @@ class Controller:
         self.curr_entry = entry
     
     def save_entry(self):
+        """Saves the current entry to the database."""
         if self.curr_entry is not None:
             self.curr_entry.title = self.entry_frame.title_entry.get()
             self.curr_entry.content = self.entry_frame.get_content()
@@ -81,26 +97,19 @@ class Controller:
     def new_entry(self):
         """Handles the command for a new entry."""
 
-        self.entry_frame.enable_entry_modification()
-        
-        # if self.curr_entry is not None:
-        #     self.curr_entry.content = self.entry_frame.get_content()
-
         self.entry_frame.clear_entry()
        
         # Set the datetime of the date created label
+        # TODO: store created_date as an integer (format YYYYMMDDHHMMSS)
         created_date = datetime.now().strftime('%c')
-        self.entry_frame.date_created_lbl['text'] = created_date
+        self.entry_frame.date_created_label['text'] = created_date
        
         # Focus on entry title
         self.entry_frame.title_entry.focus()
-       
-        bttn, del_bttn = self._new_entry_list_item()
 
         # Create Entry object and add to entries dict
-        self.curr_entry = Entry(self, uid=self.db.get_uid(),
-                                created_date=created_date,
-                                bttn=bttn, del_bttn=del_bttn
+        self.curr_entry = self._add_new_entry_list_item(uid=self.db.get_uid(),
+                                                        created_date=created_date
         )
         self.entries.update({self.curr_entry.uid: self.curr_entry})
     
