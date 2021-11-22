@@ -88,7 +88,6 @@ class Controller:
             self.entry_frame.set_entry_modification_state(tk.NORMAL)
             self.curr_entry = entry
         else:
-            self.curr_entry.bttn['textvariable'] = ''
             self.curr_entry.content = self.entry_frame.get_content()
         
         self.entry_frame.clear_entry()
