@@ -40,7 +40,7 @@ class Controller:
         del self.entries[entry.uid]  # free entry from cache
 
         # Clear the entry_frame if currently selected entry is deleted.
-        if entry.uid == self.curr_entry.uid:
+        if self.curr_entry is not None and entry.uid == self.curr_entry.uid:
             self.entry_frame.clear_entry()
             # TODO: auto-select the next entry
             self.entry_frame.set_entry_modification_state(tk.DISABLED)
