@@ -7,6 +7,7 @@ from datetime import datetime
 
 from database.database import Database
 from entry import Entry
+from enums import DateFormat
 
 import typing
 if typing.TYPE_CHECKING:
@@ -44,6 +45,13 @@ class Controller:
             self.entry_frame.clear_entry()
             # TODO: auto-select the next entry
             self.entry_frame.set_entry_modification_state(tk.DISABLED)
+    
+    def get_date_format_view(self, date_str: str, target_format: DateFormat):
+        """Returns the appropriate format for the date storage and view."""
+        if target_format is DateFormat.DB:
+            return datetime.strptime(date_str, DateFormat.USER.value).strftime(DateFormat.DB.value)
+        elif target_format is DateFormat.USER:
+            return datetime.strptime(date_str, DateFormat.DB.value).strftime(DateFormat.USER.value)
     
     def _add_new_entry_list_item(self, **kwargs) -> Entry:
         """Adds a new entry list item to the entry list.
@@ -100,16 +108,15 @@ class Controller:
         self.entry_frame.clear_entry()
        
         # Set the datetime of the date created label
-        # TODO: store created_date as an integer (format YYYYMMDDHHMMSS)
-        created_date = datetime.now().strftime('%c')
-        self.entry_frame.date_created_label['text'] = created_date
+        created_date = datetime.now()
+        self.entry_frame.date_created_label['text'] = created_date.strftime(DateFormat.USER.value)
        
         # Focus on entry title
         self.entry_frame.title_entry.focus()
 
         # Create Entry object and add to entries dict
         self.curr_entry = self._add_new_entry_list_item(uid=self.db.get_uid(),
-                                                        created_date=created_date
+                                                        created_date=created_date.strftime(DateFormat.DB.value)
         )
         self.entries.update({self.curr_entry.uid: self.curr_entry})
     

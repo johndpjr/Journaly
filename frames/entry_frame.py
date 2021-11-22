@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from entry import Entry
+from enums import DateFormat
 
 import typing
 if typing.TYPE_CHECKING:
@@ -15,7 +16,7 @@ class EntryFrame(tk.Frame):
     the journal entry information.
     """
 
-    def __init__(self, parent, *args, **kwargs):
+    def __init__(self, parent: App, *args, **kwargs):
         # Initialize the frame
         super().__init__(parent, *args, **kwargs)
         self.controller = parent.controller
@@ -77,7 +78,9 @@ class EntryFrame(tk.Frame):
         # Insert title
         self.title_entry.insert(0, entry.title)
         # Set created date label
-        self.date_created_label['text'] = entry.created_date
+        self.date_created_label['text'] = self.controller.get_date_format_view(entry.created_date,
+                                                                               DateFormat.USER
+        )
         # Insert content into text box
         self.content_text.insert(1.0, entry.content)
 
