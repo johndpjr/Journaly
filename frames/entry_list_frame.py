@@ -46,6 +46,7 @@ class EntryListFrame(tk.Frame):
         self.vertical_scroll_frame.grid(row=2, column=0,
                                         columnspan=2, sticky=tk.NSEW
         )
+        self.vertical_scroll_frame.interior.grid_columnconfigure(0, weight=1)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(2, weight=1)

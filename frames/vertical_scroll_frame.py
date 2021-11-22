@@ -18,7 +18,7 @@ class VerticalScrollFrame(Frame):
         canvas = Canvas(self, bd=0, highlightthickness=0,
                         yscrollcommand=vscrollbar.set
         )
-        canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
+        canvas.pack(side=RIGHT, fill=BOTH, expand=TRUE)
         vscrollbar.config(command=canvas.yview)
 
         # reset the view
@@ -47,3 +47,16 @@ class VerticalScrollFrame(Frame):
                 # update the inner frame's width to fill the canvas
                 canvas.itemconfigure(interior_id, width=canvas.winfo_width())
         canvas.bind('<Configure>', _configure_canvas)
+
+        def _on_mousewheel(event):
+            # TODO: make a mac binding
+            canvas.yview_scroll(int(-1*(event.delta/120)), UNITS)
+
+        def _bound_to_mousewheel(event):
+            canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+        def _unbound_to_mousewheel(event):
+            canvas.unbind_all("<MouseWheel>")
+        
+        self.bind('<Enter>', _bound_to_mousewheel)
+        self.bind('<Leave>', _unbound_to_mousewheel)

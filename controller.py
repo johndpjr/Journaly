@@ -58,10 +58,10 @@ class Controller:
         Returns the newly created entry.
         """
         bttn = ttk.Button(self.entry_list_frame.vertical_scroll_frame.interior)
-        bttn.grid(row=self._curr_grid_row, column=0, sticky=tk.EW)
+        bttn.grid(row=self._curr_grid_row, column=0, ipady=5, sticky=tk.EW)
 
-        del_bttn = ttk.Button(self.entry_list_frame.vertical_scroll_frame.interior, text='X')
-        del_bttn.grid(row=self._curr_grid_row, column=1)
+        del_bttn = ttk.Button(self.entry_list_frame.vertical_scroll_frame.interior, text='X', width=5)
+        del_bttn.grid(row=self._curr_grid_row, column=1, ipady=5, sticky=tk.E)
         self._curr_grid_row += 1
 
         entry = Entry(self, bttn=bttn, del_bttn=del_bttn, **kwargs)
