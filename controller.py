@@ -27,7 +27,7 @@ class Controller:
 
         self.curr_entry = None
         self.entries = {}  # contains cached Entry objects
-        self._curr_grid_row = 2
+        self._curr_grid_row = 0
     
     def add_frames(self):
         self.entry_list_frame = self.parent.entry_list_frame
@@ -57,10 +57,10 @@ class Controller:
         """Adds a new entry list item to the entry list.
         Returns the newly created entry.
         """
-        bttn = ttk.Button(self.entry_list_frame)
+        bttn = ttk.Button(self.entry_list_frame.vertical_scroll_frame.interior)
         bttn.grid(row=self._curr_grid_row, column=0, sticky=tk.EW)
 
-        del_bttn = ttk.Button(self.entry_list_frame, text='X')
+        del_bttn = ttk.Button(self.entry_list_frame.vertical_scroll_frame.interior, text='X')
         del_bttn.grid(row=self._curr_grid_row, column=1)
         self._curr_grid_row += 1
 
