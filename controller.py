@@ -7,7 +7,7 @@ from datetime import datetime
 
 from database.database import Database
 from entry import Entry
-from enums import DateFormat
+from enums import DateFormat, UpdateType
 
 import typing
 if typing.TYPE_CHECKING:
@@ -26,7 +26,7 @@ class Controller:
         self.title_entry_var = tk.StringVar()
 
         self.curr_entry = None
-        self.entries = {}  # contains cached Entry objects
+        self.entries = {}  # contains all Entry objects
         self._curr_grid_row = 0
     
     def add_frames(self):
@@ -73,11 +73,12 @@ class Controller:
         Retrieves all entries from the database and
         displays them as buttons.
         """
-        for db_entry in self.db.getall_entries():
+        for db_entry in self.db.getall_entry_titles():
             # Create entry object
-            entry = self._add_new_entry_list_item(uid=db_entry[0], title=db_entry[1],
-                                                  created_date=db_entry[2], content=db_entry[3],
-                                                  persistent=True
+            entry = self._add_new_entry_list_item(uid=db_entry[0],
+                                                  title=db_entry[1],
+                                                  persistent=True,
+                                                  cached=False
             )
             # Update the dictionary
             self.entries.update({entry.uid: entry})
@@ -89,6 +90,10 @@ class Controller:
             self.curr_entry = entry
         else:
             self.curr_entry.content = self.entry_frame.get_content()
+        
+        if not entry.cached:
+            entry.created_date, entry.content = self.db.get_cache(entry)
+            entry.cached = True
         
         self.entry_frame.clear_entry()
         self.entry_frame.insert_entry(entry)
@@ -123,21 +128,21 @@ class Controller:
         self.curr_entry.bttn['textvariable'] = self.title_entry_var
     
     def entry_focus_out(self, title: str):
-        # Set button text to title of entry.
-        self.curr_entry.title = title
+        """Handles the event when the entry_title is focused out."""
         # Unlink the textvaraible of the current entry.
         self.curr_entry.bttn.config(textvariable='', text=title)
         
         # Add to database if entry is not persistent.
         if not self.curr_entry.persistent:
+            self.curr_entry.title = title
             self.db.add_entry(self.curr_entry)
             self.curr_entry.persistent = True
-        else:  # update content if persistent
-            self.db.update_entry(self.curr_entry)
+        elif self.curr_entry.title != title:
+            self.curr_entry.title = title
+            self.db.update_entry(self.curr_entry, update_type=UpdateType.TITLE)
     
     def textbox_focus_out(self):
-        self.curr_entry.content = self.entry_frame.get_content()
-        if self.curr_entry.persistent:
-            self.db.update_entry(self.curr_entry)
-        else:
-            self.db.add_entry(self.curr_entry)
+        # Update content_text only if it was modified
+        if self.curr_entry.persistent and self.curr_entry.content != self.entry_frame.get_content():
+            self.curr_entry.content = self.entry_frame.get_content()
+            self.db.update_entry(self.curr_entry, update_type=UpdateType.CONTENT)

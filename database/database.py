@@ -3,6 +3,7 @@ import uuid
 from pathlib import Path
 
 from entry import Entry
+from enums import UpdateType
 
 
 class Database:
@@ -39,17 +40,40 @@ class Database:
         with self.conn:
             self.c.execute("DELETE FROM Entries WHERE uid=?", (entry.uid,))
 
-    def update_entry(self, entry: Entry):
+    def update_entry(self, entry: Entry, update_type: UpdateType=UpdateType.ALL):
         """Updates an entry."""
-        with self.conn:
-            self.c.execute("""UPDATE Entries
-                           SET title=?,
-                           content=?
-                           WHERE uid=?""", (entry.title, entry.content, entry.uid)
-            )
 
-    def getall_entries(self):
-        """Gets all entries from Entries."""
+        if update_type is UpdateType.TITLE:
+            with self.conn:
+                self.c.execute("""UPDATE Entries
+                               SET title=?
+                               WHERE uid=?""",
+                               (entry.title, entry.uid)
+                )
+        elif update_type is UpdateType.CONTENT:
+            with self.conn:
+                self.c.execute("""UPDATE Entries
+                               SET content=?
+                               WHERE uid=?""",
+                               (entry.content, entry.uid)
+                )
+        else:  # update_type is UpdateType.ALL
+            with self.conn:
+                self.c.execute("""UPDATE Entries
+                               SET title=?,
+                               content=?
+                               WHERE uid=?""",
+                               (entry.title, entry.content, entry.uid)
+                )
+    
+    def getall_entry_titles(self):
+        """Returns a list of entry titles from Entries."""
         with self.conn:
-            self.c.execute("SELECT * FROM Entries")
+            self.c.execute("SELECT uid, title FROM Entries")
         return self.c.fetchall()
+    
+    def get_cache(self, entry: Entry):
+        """Returns the cache for an entry (content and createdDate)."""
+        with self.conn:
+            self.c.execute("SELECT createdDate, content FROM Entries WHERE uid=?", (entry.uid,))
+        return self.c.fetchone()
