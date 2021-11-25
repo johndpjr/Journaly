@@ -7,7 +7,7 @@ class Entry:
     def __init__(self, controller, uid=None, title=None,
                  content='', created_date=None,
                  bttn=None, del_bttn=None,
-                 persistent=False):
+                 persistent=False, cached=False):
         self.uid = uid
         self.title = title
         self.content = content
@@ -15,6 +15,7 @@ class Entry:
         self.bttn = bttn
         self.del_bttn = del_bttn
         self.persistent = persistent
+        self.cached = cached
 
         self.bttn['command'] = lambda e=self: controller.open_entry(e)
         self.del_bttn['command'] = lambda e=self: controller.delete_entry(e)

@@ -26,7 +26,7 @@ class Controller:
         self.title_entry_var = tk.StringVar()
 
         self.curr_entry = None
-        self.entries = {}  # contains cached Entry objects
+        self.entries = {}  # contains all Entry objects
         self._curr_grid_row = 0
     
     def add_frames(self):
@@ -73,11 +73,12 @@ class Controller:
         Retrieves all entries from the database and
         displays them as buttons.
         """
-        for db_entry in self.db.getall_entries():
+        for db_entry in self.db.getall_entry_titles():
             # Create entry object
-            entry = self._add_new_entry_list_item(uid=db_entry[0], title=db_entry[1],
-                                                  created_date=db_entry[2], content=db_entry[3],
-                                                  persistent=True
+            entry = self._add_new_entry_list_item(uid=db_entry[0],
+                                                  title=db_entry[1],
+                                                  persistent=True,
+                                                  cached=False
             )
             # Update the dictionary
             self.entries.update({entry.uid: entry})
@@ -89,6 +90,10 @@ class Controller:
             self.curr_entry = entry
         else:
             self.curr_entry.content = self.entry_frame.get_content()
+        
+        if not entry.cached:
+            entry.created_date, entry.content = self.db.get_cache(entry)
+            entry.cached = True
         
         self.entry_frame.clear_entry()
         self.entry_frame.insert_entry(entry)
