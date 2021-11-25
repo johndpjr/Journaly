@@ -65,12 +65,6 @@ class Database:
                                WHERE uid=?""",
                                (entry.title, entry.content, entry.uid)
                 )
-
-    def getall_entries(self):
-        """Gets all entries from Entries."""
-        with self.conn:
-            self.c.execute("SELECT * FROM Entries")
-        return self.c.fetchall()
     
     def getall_entry_titles(self):
         """Returns a list of entry titles from Entries."""
